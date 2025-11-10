@@ -57,3 +57,107 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Laravel 12 CSV Upload Project
+
+### Description
+
+This project enables CSV ingestion with:
+- Drag-and-drop or file select upload
+- Background processing via queued jobs (Horizon or queue:work)
+- Recent uploads list with real-time status
+- Idempotent upsert based on `UNIQUE_KEY`
+- Alpine.js + SweetAlert2 for interactivity
+
+### Requirements
+- PHP >= 8.2
+- Composer
+- Node.js + npm
+- Redis (for queues/Horizon)
+- A database (MySQL recommended)
+
+If `php` is not available on macOS:
+- Install via Homebrew: `brew install php`
+- Install Composer: `brew install composer` (or download from getcomposer.org)
+
+### Installation
+1) Clone the repository
+   - `git clone <your-repo-url>`
+   - `cd <project-folder>`
+
+2) Install PHP dependencies
+   - `composer install`
+
+3) Install Node.js dependencies & build assets
+   - `npm install`
+   - For development: `npm run dev` (Vite)
+   - For production build: `npm run build`
+
+4) Copy .env and generate app key
+   - `cp .env.example .env`
+   - `php artisan key:generate`
+
+5) Configure database in `.env`
+   - `DB_CONNECTION=mysql`
+   - `DB_HOST=127.0.0.1`
+   - `DB_PORT=3306`
+   - `DB_DATABASE=your_database`
+   - `DB_USERNAME=your_username`
+   - `DB_PASSWORD=your_password`
+
+6) Run migrations
+   - `php artisan migrate`
+
+7) (Optional) Install Horizon for queue monitoring
+   - `composer require predis/predis`
+   - `composer require laravel/horizon`
+   - `php artisan vendor:publish --provider="Laravel\Horizon\HorizonServiceProvider"`
+
+### PHP Settings for Large CSV Uploads
+We recommend increasing upload and memory limits when using `php artisan serve`:
+- Temporary (development):
+  - `php -d upload_max_filesize=50M -d post_max_size=50M -d memory_limit=1024M artisan serve`
+- Permanent (CLI `php.ini`):
+  - Find config: `php --ini`
+  - Set values:
+    - `upload_max_filesize = 50M`
+    - `post_max_size = 50M`
+    - `memory_limit = 1024M`
+  - Restart the server after saving.
+
+### Running the Project
+1) Start Redis
+   - `redis-server`
+
+2) Start a queue worker (choose one):
+   - Horizon: `php artisan horizon`
+   - Basic worker: `php artisan queue:work`
+
+3) Start Laravel dev server with increased limits
+   - `php -d upload_max_filesize=50M -d post_max_size=50M -d memory_limit=1024M artisan serve`
+
+4) Open in browser
+   - `http://127.0.0.1:8000`
+
+### Features
+- Drag & drop CSV upload area
+- File select button
+- Real-time recent uploads list (Alpine.js polling)
+- SweetAlert2 notifications for upload and processing status
+- Background job processing (Horizon or queue:work)
+
+### Memory-Efficient CSV Handling
+- `SplFileObject` streaming
+- Batched `Product::upsert()`
+- UTF-8 character cleanup
+- Idempotent UPSERT using `UNIQUE_KEY`
+
+### Optional Notes
+- For very large CSVs, adjust `batchSize` in `ProcessCsvFile` (default: 500)
+- Frontend uses Alpine.js + SweetAlert2 — no Livewire required
+- Keep `memory_limit` high if processing very large CSVs (>50 MB)
+
+### Troubleshooting
+- `php: command not found` → install PHP (e.g., `brew install php`) and Composer
+- Upload stuck at "pending" → ensure Redis is running and start Horizon or `queue:work`
+- Port 8000 in use → stop the other process or run `php artisan serve --port=8001`
