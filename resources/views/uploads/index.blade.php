@@ -25,7 +25,7 @@
 
                 <input type="file" accept=".csv" class="hidden" x-ref="fileInput" @change="selectFile">
 
-                <button type="button" @click="$refs.fileInput.click()" class="mt-3 text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg shadow transition cursor-pointer">
+                <button type="button" class="mt-3 text-sm bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg shadow transition cursor-pointer">
                     Choose File
                 </button>
 
@@ -68,7 +68,7 @@
                                 <span :class="{
                                     'text-green-700 bg-green-50 px-2 py-0.5 rounded-full': item.status === 'completed',
                                     'text-yellow-700 bg-yellow-50 px-2 py-0.5 rounded-full': item.status === 'processing',
-                                    'text-red-700 bg-red-50 px-2 py-0.5 rounded-full': item.status === 'failed' || item.status === 'timeout'
+                                    'text-red-700 bg-red-50 px-2 py-0.5 rounded-full': item.status === 'failed' || item.status === 'timeout',
                                 }" x-text="item.status">
                                 </span>
                             </td>
@@ -76,15 +76,8 @@
                             <td class="p-3 text-center space-y-1">
                                 <!-- Resume Button -->
                                 <template x-if="item.status === 'failed' || item.status === 'timeout'">
-                                    <button class="bg-blue-600 text-white text-xs px-3 py-1 rounded hover:bg-blue-700 transition" @click="resumeUpload(item.id)">
+                                    <button class="bg-blue-600 text-white text-xs px-3 py-1 rounded hover:bg-blue-700 transition cursor-pointer" @click="resumeUpload(item.id)">
                                         Resume
-                                    </button>
-                                </template>
-
-                                <!-- Stop Button -->
-                                <template x-if="item.status === 'processing'">
-                                    <button class="bg-red-600 text-white text-xs px-3 py-1 rounded hover:bg-red-700 transition" @click="stopUpload(item.id)">
-                                        Stop
                                     </button>
                                 </template>
 

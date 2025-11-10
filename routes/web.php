@@ -10,4 +10,3 @@ Route::get('/uploads', [FileUploadController::class, 'index'])->name('uploads.in
 Route::get('/uploads-csv', [FileUploadController::class, 'csv'])->name('uploads.csv');
 Route::post('/uploads', [FileUploadController::class, 'store'])->name('uploads.store');
 Route::post('/uploads/{upload}/resume', [FileUploadController::class, 'resume'])->name('uploads.resume');
-Route::post('/uploads/{upload}/stop', [FileUploadController::class, 'stop'])->name('uploads.stop');

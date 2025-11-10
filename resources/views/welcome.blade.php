@@ -36,7 +36,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                    @foreach ($products as $product)
+                    @forelse ($products as $product)
                         <tr class="hover:bg-gray-50 transition-colors">
                             <!-- Index -->
                             <td class="p-3 text-gray-500">{{ $loop->iteration + ($products->currentPage() - 1) * $products->perPage() }}</td>
@@ -103,14 +103,20 @@
                                 <div>{{ $product->created_at->format('h:i a') }}</div>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="12" class="p-3 text-center text-yellow-800">No products found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
-
+        
         <!-- Pagination -->
-        <div class="mt-4">
-            {{ $products->links() }}
-        </div>
+        @if ($products->isNotEmpty())
+            <div class="mt-4">
+                {{ $products->links() }}
+            </div>
+        @endif
     </div>
 </x-app-layout>
